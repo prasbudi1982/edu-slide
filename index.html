@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduSlide AI - Presentation Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Pustaka PPTXGenJS untuk Ekspor PowerPoint -->
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-black text-lg">E</div>
+        <h1 class="text-xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
+          EduSlide AI Generator
+        </h1>
+      </div>
+      <span class="text-xs bg-slate-800 text-slate-400 px-3 py-1 rounded-full border border-slate-700 font-mono">
+        Presentasi Sederhana
+      </span>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-6xl w-full mx-auto px-4 py-8 space-y-8">
+    
+    <!-- Form Input Generator -->
+    <section class="bg-slate-900 rounded-2xl p-6 md:p-8 border border-slate-800 shadow-xl space-y-6">
+      <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
+        <span>📝</span> Parameter & Deskripsi Bahan Ajar
+      </h2>
+
+      <form id="generateForm" class="space-y-4">
+        <div class="space-y-1">
+          <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Topik & Detail Pembahasan</label>
+          <textarea 
+            id="topicInput" 
+            rows="4" 
+            required 
+            placeholder="Tuliskan topik utama beserta poin-poin spesifik yang ingin dibahas." 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-emerald-500 resize-y min-h-[110px]"
+          ></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+          <div class="md:col-span-6 space-y-1">
+            <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Target Audiens / Jenjang</label>
+            <select id="audienceInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500">
+              <option value="Sekolah Dasar (SD) - Bahasa Sederhana & Ceria">Sekolah Dasar (SD)</option>
+              <option value="Siswa SMP / SMA - Bahasa Edukatif & Menarik">Siswa Sekolah (SMP / SMA)</option>
+              <option value="Mahasiswa Perkuliahan - Bahasa Akademis & Rinci">Mahasiswa (Kampus)</option>
+              <option value="Peserta Seminar & Workshop Umum">Peserta Seminar / Umum</option>
+              <option value="Eksekutif & Profesional">Profesional / Bisnis</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-6 space-y-1">
+            <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Jumlah Slide Presentasi</label>
+            <select id="slideCountInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500">
+              <option value="3">3 Slide (Singkat / Ringkasan)</option>
+              <option value="5" selected>5 Slide (Standard)</option>
+              <option value="7">7 Slide (Mendalam)</option>
+              <option value="8">8 Slide (Lengkap)</option>
+              <option value="10">10 Slide (Komprehensif)</option>
+              <option value="12">12 Slide (Materi Penuh / Modul)</option>
+            </select>
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          id="btnSubmit" 
+          class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center space-x-2 text-sm"
+        >
+          <span>🚀 Generate Bahan Ajar AI</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- Indikator Loading -->
+    <div id="loadingState" class="hidden flex flex-col items-center justify-center py-16 space-y-4">
+      <div class="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-slate-400 text-sm font-medium animate-pulse">Groq AI sedang menganalisis materi & merancang slide...</p>
+    </div>
+
+    <!-- Container Error -->
+    <div id="errorAlert" class="hidden bg-rose-950/80 border border-rose-800 text-rose-300 p-4 rounded-xl text-sm"></div>
+
+    <!-- Display Slide Output -->
+    <section id="presentationViewer" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 id="metaTitle" class="text-xl md:text-2xl font-bold text-white"></h2>
+          <p id="metaSubtitle" class="text-sm text-slate-400 mt-1"></p>
+        </div>
+        
+        <div class="flex flex-wrap items-center gap-3 self-end md:self-auto">
+          <!-- Tombol Export PowerPoint -->
+          <button id="btnSavePptx" class="bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500 px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2 shadow-lg shadow-emerald-600/20">
+            <span>💾 Export PowerPoint (.pptx)</span>
+          </button>
+
+          <div class="flex items-center space-x-2">
+            <button id="btnPrev" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-4 py-2 rounded-xl text-sm font-semibold transition">
+              ◀ Prev
+            </button>
+            <span id="slideIndicator" class="text-xs font-mono text-slate-400 px-2">1 / 5</span>
+            <button id="btnNext" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-4 py-2 rounded-xl text-sm font-semibold transition">
+              Next ▶
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="slidesContainer"></div>
+    </section>
+
+  </main>
+
+  <script type="module">
+    import { generatePresentationData } from './lib/core.js';
+    import { renderSlides } from './lib/slide.js';
+    import { generateImageUrl } from './lib/img.js';
+
+    let currentPresentationData = null;
+    let currentSlideIndex = 0;
+
+    const form = document.getElementById('generateForm');
+    const loadingState = document.getElementById('loadingState');
+    const errorAlert = document.getElementById('errorAlert');
+    const presentationViewer = document.getElementById('presentationViewer');
+    const slidesContainer = document.getElementById('slidesContainer');
+    
+    const metaTitle = document.getElementById('metaTitle');
+    const metaSubtitle = document.getElementById('metaSubtitle');
+    const slideIndicator = document.getElementById('slideIndicator');
+    
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const btnSavePptx = document.getElementById('btnSavePptx');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const topic = document.getElementById('topicInput').value.trim();
+      const audience = document.getElementById('audienceInput').value;
+      const slideCount = parseInt(document.getElementById('slideCountInput').value, 10);
+
+      if (!topic) return;
+
+      errorAlert.classList.add('hidden');
+      presentationViewer.classList.add('hidden');
+      loadingState.classList.remove('hidden');
+
+      // Auto-focus scroll ke bagian loading
+      loadingState.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      try {
+        currentPresentationData = await generatePresentationData(topic, audience, slideCount);
+        
+        metaTitle.textContent = currentPresentationData.title || "Presentasi";
+        metaSubtitle.textContent = currentPresentationData.subtitle || `Bahan Ajar untuk ${audience}`;
+
+        renderSlides(currentPresentationData, slidesContainer);
+
+        currentSlideIndex = 0;
+        updateSlideVisibility();
+
+        loadingState.classList.add('hidden');
+        presentationViewer.classList.remove('hidden');
+
+        // Auto-focus scroll ke bagian hasil presentasi
+        presentationViewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (err) {
+        loadingState.classList.add('hidden');
+        errorAlert.textContent = "Error: " + err.message;
+        errorAlert.classList.remove('hidden');
+
+        // Auto-focus scroll ke pesan error
+        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+
+    function updateSlideVisibility() {
+      const slides = slidesContainer.querySelectorAll('.slide-item');
+      slides.forEach((slideEl, index) => {
+        if (index === currentSlideIndex) {
+          slideEl.classList.remove('hidden');
+          slideEl.classList.add('block');
+        } else {
+          slideEl.classList.remove('block');
+          slideEl.classList.add('hidden');
+        }
+      });
+
+      slideIndicator.textContent = `${currentSlideIndex + 1} / ${slides.length}`;
+      btnPrev.disabled = currentSlideIndex === 0;
+      btnNext.disabled = currentSlideIndex === slides.length - 1;
+
+      btnPrev.classList.toggle('opacity-50', btnPrev.disabled);
+      btnNext.classList.toggle('opacity-50', btnNext.disabled);
+    }
+
+    btnPrev.addEventListener('click', () => {
+      if (currentSlideIndex > 0) {
+        currentSlideIndex--;
+        updateSlideVisibility();
+      }
+    });
+
+    btnNext.addEventListener('click', () => {
+      const slides = slidesContainer.querySelectorAll('.slide-item');
+      if (currentSlideIndex < slides.length - 1) {
+        currentSlideIndex++;
+        updateSlideVisibility();
+      }
+    });
+
+    // Fungsi Export ke file PPTX
+    btnSavePptx.addEventListener('click', async () => {
+      if (!currentPresentationData) return;
+
+      btnSavePptx.disabled = true;
+      btnSavePptx.innerHTML = '⌛ Menyusun PPTX...';
+
+      try {
+        const pptx = new PptxGenJS();
+        pptx.layout = 'LAYOUT_16x9';
+
+        const slides = currentPresentationData.slides || [];
+        for (const slideData of slides) {
+          const slide = pptx.addSlide();
+          slide.background = { color: '0F172A' }; // Slate-900
+
+          // Judul Slide
+          slide.addText(slideData.title || '', {
+            x: 0.5,
+            y: 0.5,
+            w: 8.5,
+            h: 0.8,
+            fontSize: 22,
+            bold: true,
+            color: 'FFFFFF',
+            fontFace: 'Arial'
+          });
+
+          // Summary / Ringkasan Subtitle
+          if (slideData.summary) {
+            slide.addText(slideData.summary, {
+              x: 0.5,
+              y: 1.2,
+              w: 8.5,
+              h: 0.5,
+              fontSize: 12,
+              italic: true,
+              color: '94A3B8'
+            });
+          }
+
+          // Poin-poin Bullet List
+          const bullets = (slideData.content || []).map(text => ({ text, options: { bullet: true, color: 'E2E8F0' } }));
+          if (bullets.length > 0) {
+            slide.addText(bullets, {
+              x: 0.5,
+              y: 1.8,
+              w: 5.5,
+              h: 4.5,
+              fontSize: 14,
+              fontFace: 'Arial',
+              lineSpacing: 24
+            });
+          }
+
+          // Catatan Pengajar (Speaker Notes)
+          if (slideData.speaker_notes) {
+            slide.addNotes(slideData.speaker_notes);
+          }
+
+          // Gambar dari Pollinations AI
+          const imgUrl = generateImageUrl(slideData.image_prompt);
+          slide.addImage({
+            path: imgUrl,
+            x: 6.2,
+            y: 1.5,
+            w: 3.3,
+            h: 4.5,
+            sizing: { type: 'cover' }
+          });
+        }
+
+        const fileName = (currentPresentationData.title || 'Presentasi').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        await pptx.writeFile({ fileName: `${fileName}.pptx` });
+      } catch (err) {
+        alert('Gagal mengekspor PowerPoint: ' + err.message);
+      } finally {
+        btnSavePptx.disabled = false;
+        btnSavePptx.innerHTML = '💾 Export PowerPoint (.pptx)';
+      }
+    });
+  </script>
+
+</body>
+</html>
