@@ -1,309 +1,220 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduSlide AI - Presentation Generator</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Pustaka PPTXGenJS untuk Ekspor PowerPoint -->
-  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>EduSlide AI</title>
+<meta name="color-scheme" content="light dark">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { darkMode: 'media' }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<style>
+  body{font-family:Inter,sans-serif}
+  .serif{font-family:Fraunces,serif}
+  *{transition: background-color 0.2s, color 0.2s, border-color 0.2s}
+</style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+<body class="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased">
 
-  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div class="w-9 h-9 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-black text-lg">E</div>
-        <h1 class="text-xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
-          EduSlide AI Generator
-        </h1>
+<header class="border-b border-slate-100 dark:border-slate-800 sticky top-0 bg-white/90 dark:bg-slate-950/90 backdrop-blur z-40">
+  <div class="max-w-5xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="w-7 h-7 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 grid place-items-center text-xs font-bold">E</div>
+      <div class="flex flex-col leading-none">
+        <span class="serif text-[17px] font-semibold tracking-tight">EduSlide AI</span>
+        <span class="text-[8px] font-semibold tracking-[0.15em] uppercase text-slate-500 dark:text-slate-400 mt-0.5">Warung Kode Pak W</span>
       </div>
-      <span class="text-xs bg-slate-800 text-slate-400 px-3 py-1 rounded-full border border-slate-700 font-mono">
-        Presentasi Sederhana
-      </span>
     </div>
-  </header>
+    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+  </div>
+</header>
 
-  <main class="flex-grow max-w-6xl w-full mx-auto px-4 py-8 space-y-8">
-    
-    <!-- Form Input Generator -->
-    <section class="bg-slate-900 rounded-2xl p-6 md:p-8 border border-slate-800 shadow-xl space-y-6">
-      <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
-        <span>📝</span> Parameter & Deskripsi Bahan Ajar
-      </h2>
+<main class="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-10 space-y-6">
 
-      <form id="generateForm" class="space-y-4">
-        <div class="space-y-1">
-          <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Topik & Detail Pembahasan</label>
-          <textarea 
-            id="topicInput" 
-            rows="4" 
-            required 
-            placeholder="Tuliskan topik utama beserta poin-poin spesifik yang ingin dibahas." 
-            class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-emerald-500 resize-y min-h-[110px]"
-          ></textarea>
-        </div>
+  <section class="bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 md:p-7">
+    <h2 class="text-[13px] font-semibold tracking-wide uppercase text-slate-600 dark:text-slate-400 mb-4">Parameter Bahan Ajar</h2>
+    <form id="generateForm" class="space-y-4">
+      <textarea id="topicInput" rows="3" required class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-[15px] leading-6 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white" placeholder="Tulis detail topik yang ingin dibahas beserta ilustrasi gambar"></textarea>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <select id="audienceInput" class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white">
+          <option value="Siswa SMP / SMA - Bahasa Edukatif & Menarik" selected>SMP / SMA</option>
+          <option>SD</option>
+          <option>Mahasiswa</option>
+          <option>Umum</option>
+        </select>
+        <select id="slideCountInput" class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white">
+          <option value="3" selected>3 Slide</option>
+          <option value="5">5 Slide</option>
+          <option value="7">7 Slide</option>
+        </select>
+      </div>
+      <button type="submit" id="btnGenerate" class="w-full bg-slate-900 dark:bg-white hover:bg-black dark:hover:bg-slate-200 text-white dark:text-slate-900 rounded-xl py-3.5 text-sm font-medium">Generate Bahan Ajar</button>
+    </form>
+  </section>
 
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-          <div class="md:col-span-6 space-y-1">
-            <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Target Audiens / Jenjang</label>
-            <select id="audienceInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500">
-              <option value="Sekolah Dasar (SD) - Bahasa Sederhana & Ceria">Sekolah Dasar (SD)</option>
-              <option value="Siswa SMP / SMA - Bahasa Edukatif & Menarik">Siswa Sekolah (SMP / SMA)</option>
-              <option value="Mahasiswa Perkuliahan - Bahasa Akademis & Rinci">Mahasiswa (Kampus)</option>
-              <option value="Peserta Seminar & Workshop Umum">Peserta Seminar / Umum</option>
-              <option value="Eksekutif & Profesional">Profesional / Bisnis</option>
-            </select>
-          </div>
+  <div id="loadingState" class="hidden py-16 flex flex-col items-center gap-3">
+    <div class="w-5 h-5 border-2 border-slate-900 dark:border-white border-t-transparent rounded-full animate-spin"></div>
+  </div>
 
-          <div class="md:col-span-6 space-y-1">
-            <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Jumlah Slide Presentasi</label>
-            <select id="slideCountInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500">
-              <option value="3">3 Slide (Singkat / Ringkasan)</option>
-              <option value="5" selected>5 Slide (Standard)</option>
-              <option value="7">7 Slide (Mendalam)</option>
-              <option value="8">8 Slide (Lengkap)</option>
-              <option value="10">10 Slide (Komprehensif)</option>
-              <option value="12">12 Slide (Materi Penuh / Modul)</option>
-            </select>
-          </div>
-        </div>
-
-        <button 
-          type="submit" 
-          id="btnSubmit" 
-          class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center space-x-2 text-sm"
-        >
-          <span>🚀 Generate Bahan Ajar AI</span>
-        </button>
-      </form>
-    </section>
-
-    <!-- Indikator Loading -->
-    <div id="loadingState" class="hidden flex flex-col items-center justify-center py-16 space-y-4">
-      <div class="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-      <p class="text-slate-400 text-sm font-medium animate-pulse">Groq AI sedang menganalisis materi & merancang slide...</p>
-    </div>
-
-    <!-- Container Error -->
-    <div id="errorAlert" class="hidden bg-rose-950/80 border border-rose-800 text-rose-300 p-4 rounded-xl text-sm"></div>
-
-    <!-- Display Slide Output -->
-    <section id="presentationViewer" class="hidden space-y-6">
-      <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 id="metaTitle" class="text-xl md:text-2xl font-bold text-white"></h2>
-          <p id="metaSubtitle" class="text-sm text-slate-400 mt-1"></p>
-        </div>
-        
-        <div class="flex flex-wrap items-center gap-3 self-end md:self-auto">
-          <!-- Tombol Export PowerPoint -->
-          <button id="btnSavePptx" class="bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500 px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2 shadow-lg shadow-emerald-600/20">
-            <span>💾 Export PowerPoint (.pptx)</span>
-          </button>
-
-          <div class="flex items-center space-x-2">
-            <button id="btnPrev" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-4 py-2 rounded-xl text-sm font-semibold transition">
-              ◀ Prev
-            </button>
-            <span id="slideIndicator" class="text-xs font-mono text-slate-400 px-2">1 / 5</span>
-            <button id="btnNext" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-4 py-2 rounded-xl text-sm font-semibold transition">
-              Next ▶
-            </button>
+  <div id="errorAlert" class="hidden">
+    <div class="rounded-2xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 p-5 space-y-3">
+      <div class="flex items-start gap-3">
+        <div class="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-300 grid place-items-center text-sm font-bold shrink-0">!</div>
+        <div class="space-y-1 flex-1">
+          <h3 id="errorTitle" class="text-sm font-semibold text-red-900 dark:text-red-200">Gagal Generate</h3>
+          <p id="errorMessage" class="text-sm text-red-700 dark:text-red-300 leading-6">Terjadi kesalahan</p>
+          <details id="errorDetailWrap" class="mt-2">
+            <summary class="text-xs text-red-600 dark:text-red-400 cursor-pointer select-none">Lihat detail</summary>
+            <pre id="errorDetail" class="mt-2 text-[11px] font-mono bg-white dark:bg-slate-900 border border-red-100 dark:border-red-900/30 rounded-xl p-3 whitespace-pre-wrap break-words text-slate-600 dark:text-slate-400"></pre>
+          </details>
+          <div class="flex gap-2 pt-2">
+            <button id="btnRetry" class="text-xs px-4 py-2 rounded-full bg-red-600 text-white font-medium hover:bg-red-700">Coba Lagi</button>
+            <button id="btnDismissError" class="text-xs px-4 py-2 rounded-full bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-slate-700">Tutup</button>
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <div id="slidesContainer"></div>
-    </section>
+  <section id="presentationViewer" class="hidden space-y-3">
+    <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      <div class="flex items-center justify-between md:justify-start gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full px-2 py-1.5 w-full md:w-auto">
+        <div class="flex items-center gap-2">
+          <button id="btnPrev" class="w-9 h-9 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 grid place-items-center text-base disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-300 dark:disabled:text-slate-600">‹</button>
+          <span id="navStatus" class="text-xs font-mono text-slate-600 dark:text-slate-400 min-w-[48px] text-center">01 / 03</span>
+          <button id="btnNext" class="w-9 h-9 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 grid place-items-center text-base disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-300 dark:disabled:text-slate-600">›</button>
+        </div>
+        <button id="btnSavePptx" class="md:hidden text-xs font-medium px-3 py-1.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900">PPTX</button>
+      </div>
+      <button id="btnSavePptxDesktop" class="hidden md:inline-flex text-sm font-medium px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-slate-100">Ekspor PPTX</button>
+    </div>
+    <div id="slidesContainer"></div>
+  </section>
 
-  </main>
+</main>
 
-  <script type="module">
-    import { generatePresentationData } from './lib/core.js';
-    import { renderSlides } from './lib/slide.js';
-    import { generateImageUrl } from './lib/img.js';
+<script type="module">
+  import { generatePresentationData } from './lib/core.js';
+  import { renderSlides, generateSlideImage, setCurrentIndex, getIsLoading } from './lib/slide.js';
+  import { generateImageUrl } from './lib/img.js';
 
-    let currentPresentationData = null;
-    let currentSlideIndex = 0;
+  let currentData = null, currentIndex = 0, imageCache = new Map();
+  const form = document.getElementById('generateForm');
+  const loadingState = document.getElementById('loadingState');
+  const errorAlert = document.getElementById('errorAlert');
+  const viewer = document.getElementById('presentationViewer');
+  const container = document.getElementById('slidesContainer');
 
-    const form = document.getElementById('generateForm');
-    const loadingState = document.getElementById('loadingState');
-    const errorAlert = document.getElementById('errorAlert');
-    const presentationViewer = document.getElementById('presentationViewer');
-    const slidesContainer = document.getElementById('slidesContainer');
-    
-    const metaTitle = document.getElementById('metaTitle');
-    const metaSubtitle = document.getElementById('metaSubtitle');
-    const slideIndicator = document.getElementById('slideIndicator');
-    
-    const btnPrev = document.getElementById('btnPrev');
-    const btnNext = document.getElementById('btnNext');
-    const btnSavePptx = document.getElementById('btnSavePptx');
+  function showError(err) {
+    const ui = err.ui || { title: "Gagal Generate", message: err.message, detail: "", code: "UNKNOWN" };
+    document.getElementById('errorTitle').textContent = ui.title + (ui.code ? ` • ${ui.code}` : '');
+    document.getElementById('errorMessage').textContent = ui.message;
+    const detailEl = document.getElementById('errorDetail');
+    const wrap = document.getElementById('errorDetailWrap');
+    if (ui.detail) { detailEl.textContent = ui.detail; wrap.classList.remove('hidden'); } else { wrap.classList.add('hidden'); }
+    errorAlert.classList.remove('hidden');
+    errorAlert.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const topic = document.getElementById('topicInput').value.trim();
-      const audience = document.getElementById('audienceInput').value;
-      const slideCount = parseInt(document.getElementById('slideCountInput').value, 10);
-
-      if (!topic) return;
-
-      errorAlert.classList.add('hidden');
-      presentationViewer.classList.add('hidden');
-      loadingState.classList.remove('hidden');
-
-      // Auto-focus scroll ke bagian loading
-      loadingState.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-      try {
-        currentPresentationData = await generatePresentationData(topic, audience, slideCount);
-        
-        metaTitle.textContent = currentPresentationData.title || "Presentasi";
-        metaSubtitle.textContent = currentPresentationData.subtitle || `Bahan Ajar untuk ${audience}`;
-
-        renderSlides(currentPresentationData, slidesContainer);
-
-        currentSlideIndex = 0;
-        updateSlideVisibility();
-
-        loadingState.classList.add('hidden');
-        presentationViewer.classList.remove('hidden');
-
-        // Auto-focus scroll ke bagian hasil presentasi
-        presentationViewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } catch (err) {
-        loadingState.classList.add('hidden');
-        errorAlert.textContent = "Error: " + err.message;
-        errorAlert.classList.remove('hidden');
-
-        // Auto-focus scroll ke pesan error
-        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    });
-
-    function updateSlideVisibility() {
-      const slides = slidesContainer.querySelectorAll('.slide-item');
-      slides.forEach((slideEl, index) => {
-        if (index === currentSlideIndex) {
-          slideEl.classList.remove('hidden');
-          slideEl.classList.add('block');
-        } else {
-          slideEl.classList.remove('block');
-          slideEl.classList.add('hidden');
-        }
-      });
-
-      slideIndicator.textContent = `${currentSlideIndex + 1} / ${slides.length}`;
-      btnPrev.disabled = currentSlideIndex === 0;
-      btnNext.disabled = currentSlideIndex === slides.length - 1;
-
-      btnPrev.classList.toggle('opacity-50', btnPrev.disabled);
-      btnNext.classList.toggle('opacity-50', btnNext.disabled);
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const topic = document.getElementById('topicInput').value.trim();
+    const audience = document.getElementById('audienceInput').value;
+    const count = parseInt(document.getElementById('slideCountInput').value);
+    errorAlert.classList.add('hidden'); viewer.classList.add('hidden');
+    loadingState.classList.remove('hidden');
+    document.getElementById('btnGenerate').disabled = true;
+    document.getElementById('btnGenerate').textContent = "Menyusun...";
+    setTimeout(() => loadingState.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    imageCache.clear();
+    try {
+      currentData = await generatePresentationData(topic, audience, count);
+      renderSlides(currentData, container, imageCache);
+      currentIndex = 0; setCurrentIndex(0); updateView();
+      loadingState.classList.add('hidden'); viewer.classList.remove('hidden');
+      setTimeout(() => viewer.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    } catch (err) {
+      loadingState.classList.add('hidden');
+      showError(err);
+    } finally {
+      document.getElementById('btnGenerate').disabled = false;
+      document.getElementById('btnGenerate').textContent = "Generate Bahan Ajar";
     }
+  });
 
-    btnPrev.addEventListener('click', () => {
-      if (currentSlideIndex > 0) {
-        currentSlideIndex--;
-        updateSlideVisibility();
-      }
+  document.getElementById('btnRetry').onclick = () => { errorAlert.classList.add('hidden'); form.requestSubmit(); };
+  document.getElementById('btnDismissError').onclick = () => errorAlert.classList.add('hidden');
+
+  function updateView() {
+    container.querySelectorAll('.slide-item').forEach((el, i) => {
+      el.classList.toggle('hidden', i !== currentIndex);
+      el.classList.toggle('block', i === currentIndex);
     });
+    document.getElementById('navStatus').textContent = `${String(currentIndex+1).padStart(2,'0')} / ${String(container.querySelectorAll('.slide-item').length).padStart(2,'0')}`;
+    setCurrentIndex(currentIndex);
+  }
 
-    btnNext.addEventListener('click', () => {
-      const slides = slidesContainer.querySelectorAll('.slide-item');
-      if (currentSlideIndex < slides.length - 1) {
-        currentSlideIndex++;
-        updateSlideVisibility();
-      }
+  document.getElementById('btnPrev').onclick = () => {
+    if (getIsLoading() || currentIndex === 0) return;
+    currentIndex--; updateView();
+    const s = currentData.slides[currentIndex];
+    if (!imageCache.has(s.image_prompt)) generateSlideImage(currentIndex, s, container, imageCache);
+  };
+  document.getElementById('btnNext').onclick = () => {
+    if (getIsLoading()) return;
+    const slides = container.querySelectorAll('.slide-item');
+    if (currentIndex >= slides.length - 1) return;
+    currentIndex++; updateView();
+    const s = currentData.slides[currentIndex];
+    if (!imageCache.has(s.image_prompt)) generateSlideImage(currentIndex, s, container, imageCache);
+  };
+
+  async function blobToDataURL(blob) {
+    return new Promise(resolve => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.readAsDataURL(blob);
     });
+  }
 
-    // Fungsi Export ke file PPTX
-    btnSavePptx.addEventListener('click', async () => {
-      if (!currentPresentationData) return;
-
-      btnSavePptx.disabled = true;
-      btnSavePptx.innerHTML = '⌛ Menyusun PPTX...';
-
-      try {
-        const pptx = new PptxGenJS();
-        pptx.layout = 'LAYOUT_16x9';
-
-        const slides = currentPresentationData.slides || [];
-        for (const slideData of slides) {
-          const slide = pptx.addSlide();
-          slide.background = { color: '0F172A' }; // Slate-900
-
-          // Judul Slide
-          slide.addText(slideData.title || '', {
-            x: 0.5,
-            y: 0.5,
-            w: 8.5,
-            h: 0.8,
-            fontSize: 22,
-            bold: true,
-            color: 'FFFFFF',
-            fontFace: 'Arial'
-          });
-
-          // Summary / Ringkasan Subtitle
-          if (slideData.summary) {
-            slide.addText(slideData.summary, {
-              x: 0.5,
-              y: 1.2,
-              w: 8.5,
-              h: 0.5,
-              fontSize: 12,
-              italic: true,
-              color: '94A3B8'
-            });
-          }
-
-          // Poin-poin Bullet List
-          const bullets = (slideData.content || []).map(text => ({ text, options: { bullet: true, color: 'E2E8F0' } }));
-          if (bullets.length > 0) {
-            slide.addText(bullets, {
-              x: 0.5,
-              y: 1.8,
-              w: 5.5,
-              h: 4.5,
-              fontSize: 14,
-              fontFace: 'Arial',
-              lineSpacing: 24
-            });
-          }
-
-          // Catatan Pengajar (Speaker Notes)
-          if (slideData.speaker_notes) {
-            slide.addNotes(slideData.speaker_notes);
-          }
-
-          // Gambar dari Pollinations AI
-          const imgUrl = generateImageUrl(slideData.image_prompt);
-          slide.addImage({
-            path: imgUrl,
-            x: 6.2,
-            y: 1.5,
-            w: 3.3,
-            h: 4.5,
-            sizing: { type: 'cover' }
-          });
+  const exportPptx = async (btn) => {
+    if (!currentData) return;
+    const orig = btn.textContent; btn.textContent = 'Menyusun…'; btn.disabled = true;
+    try {
+      const pptx = new PptxGenJS(); pptx.layout = 'LAYOUT_16x9';
+      for (let i = 0; i < currentData.slides.length; i++) {
+        const sd = currentData.slides[i];
+        const sl = pptx.addSlide(); sl.background = { color: 'FFFFFF' };
+        sl.addText(sd.title, { x: 0.5, y: 0.4, w: 8.5, h: 0.7, fontSize: 20, bold: true, color: '0F172A' });
+        const bullets = (sd.content || []).map(t => ({ text: t, options: { bullet: true, color: '334155' } }));
+        if (bullets.length) sl.addText(bullets, { x: 0.5, y: 1.2, w: 5.5, h: 4.5, fontSize: 12 });
+        let url = imageCache.get(sd.image_prompt);
+        if (!url) { try { url = await generateImageUrl(sd.image_prompt, 768, 512); } catch {} }
+        if (url) {
+          try {
+            let dataUrl = url;
+            if (url.startsWith('blob:')) {
+              const r = await fetch(url); const b = await r.blob();
+              dataUrl = await blobToDataURL(b);
+            }
+            if (dataUrl.startsWith('data:')) {
+              sl.addImage({ data: dataUrl, x: 6.3, y: 1.2, w: 3.2, h: 4.2, sizing: { type: 'cover' } });
+            } else {
+              sl.addImage({ path: dataUrl, x: 6.3, y: 1.2, w: 3.2, h: 4.2, sizing: { type: 'cover' } });
+            }
+          } catch {}
         }
-
-        const fileName = (currentPresentationData.title || 'Presentasi').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        await pptx.writeFile({ fileName: `${fileName}.pptx` });
-      } catch (err) {
-        alert('Gagal mengekspor PowerPoint: ' + err.message);
-      } finally {
-        btnSavePptx.disabled = false;
-        btnSavePptx.innerHTML = '💾 Export PowerPoint (.pptx)';
       }
-    });
-  </script>
-
+      await pptx.writeFile({ fileName: (currentData.title || 'eduslide').replace(/[^a-z0-9]/gi, '_') + '.pptx' });
+    } catch (err) {
+      alert('Gagal export PPTX: ' + err.message);
+    } finally { btn.textContent = orig; btn.disabled = false; }
+  };
+  document.getElementById('btnSavePptx').onclick = () => exportPptx(document.getElementById('btnSavePptx'));
+  document.getElementById('btnSavePptxDesktop').onclick = () => exportPptx(document.getElementById('btnSavePptxDesktop'));
+</script>
 </body>
 </html>
